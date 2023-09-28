@@ -1,0 +1,2 @@
+#!/bin/bash
+( ls -a | egrep '^\.{1,2}$'; ls -a | egrep -v '^\.{1,2}$' | LC_ALL=C sort -d; ) | tr '\n' ',' | sed 's/,$/\n/'
