@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -Ap | LC_ALL=C.UTF-8 sort -d | tr '\n' ',' | sed 's/,$/\n/'
+ls -Ap | LC_ALL=C.UTF-8 sort -d -k1,1 | tr '\n' ',' | sed 's/,$/\n/'
