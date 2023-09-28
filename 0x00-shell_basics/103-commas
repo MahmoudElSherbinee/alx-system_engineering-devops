@@ -1,2 +1,2 @@
 #!/bin/bash
-(echo . ..) | (ls -1A | grep -E -v '^\.{1,2}$' | LC_ALL=C sort -d) | tr '\n' ',' | sed 's/,$/\n/'
+(ls -A1 | sed '/^.\{1\}$/d' | sed 's/$/,/' | sort -t '/' -k2,2n -k2,2 -k1,1n -k1,1 | tr -d '\n'; echo)
