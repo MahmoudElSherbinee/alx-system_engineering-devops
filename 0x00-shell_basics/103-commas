@@ -1,2 +1,2 @@
 #!/bin/bash
-(ls -A1 | sed '/^.\{1\}$/d' | sed 's/$/,/' | sort -t '/' -k2,2n -k2,2 -k1,1n -k1,1 | tr -d '\n'); echo
+ls -Ap | LC_ALL=C.UTF-8 sort -d | tr '\n' ',' | sed 's/,$/\n/'
