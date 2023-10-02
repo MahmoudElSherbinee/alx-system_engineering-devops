@@ -1,2 +1,2 @@
 #!/bin/bash
-find . -type f -mtime -1 | tail -n 10 | sort -r
+ls -tr | tail -n 10 | sort -r
