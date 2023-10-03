@@ -1,0 +1,4 @@
+#!/bin/bash
+git add .
+git commit -m 'Auto push for 0x03 task'
+git push
