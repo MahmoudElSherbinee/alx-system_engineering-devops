@@ -1,2 +1,2 @@
 #!/bin/bash
-printf "%d + $TRUEKNOWLEDGE" 128
+printf "%d + $TRUEKNOWLEDGE \n" 128
