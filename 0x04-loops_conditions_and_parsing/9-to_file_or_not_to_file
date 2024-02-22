@@ -8,6 +8,7 @@ if [ -e "$FILE" ]; then
 
     if [ ! -s "$FILE" ]; then
         echo "school file is empty"
+        echo "school is a regular file"
     else
         echo "school file is not empty"
 
