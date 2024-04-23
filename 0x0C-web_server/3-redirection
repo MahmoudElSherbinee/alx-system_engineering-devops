@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Install nginx on your web-01
+# server
+# Nginx should be listening on port 80
+# When querying Nginx at its root / with a GET request
+# (requesting a page) using curl,
+# it must return a page that contains the string Hello World!
+
+# Bash script that configures a new Ubuntu machine
+# to respect above requirements (this script will be run on the server itself)
+# You can’t use systemctl for restarting nginx
+
+# Update package lists to get the latest versions of packages
+apt-get update
+
+# Check if nginx is not installed by verifying if its executable is not found
+if ! [ -x "$(command -v nginx)" ]; then
+
+  # Install nginx package silently (-y) without prompting for confirmation
+  apt-get install -y nginx
+fi
+
+# Allow incoming HTTP traffic through the firewall for Nginx
+ufw allow 'Nginx HTTP'
+
+# Write "Hello World!" to the default HTML file served by Nginx
+echo "Hello World!" > /var/www/html/index.nginx-debian.html
+
+# Configure your Nginx server so that /redirect_me is redirecting to another page.
+sudo sed -i "/server_name _;/a \    location /redirect_me {\n        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;\n    }" /etc/nginx/sites-available/default
+
+
+# Start the Nginx service
+service nginx start
