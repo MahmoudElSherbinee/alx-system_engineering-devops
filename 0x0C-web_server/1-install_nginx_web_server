@@ -10,10 +10,12 @@
 # to respect above requirements (this script will be run on the server itself)
 # You can’t use systemctl for restarting nginx
 
+# Update package lists to get the latest versions of packages
+apt-get update
+
 # Check if nginx is not installed by verifying if its executable is not found
 if ! [ -x "$(command -v nginx)" ]; then
-  # Update package lists to get the latest versions of packages
-  apt-get update
+
   # Install nginx package silently (-y) without prompting for confirmation
   apt-get install -y nginx
 fi
