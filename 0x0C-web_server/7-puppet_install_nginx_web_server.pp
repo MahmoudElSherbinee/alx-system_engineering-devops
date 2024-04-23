@@ -1,54 +1,24 @@
-# Class: nginx
-#
-# This class installs and configures Nginx web server.
-#
-# Parameters:
-#   None
-#
-class nginx {
-  # Install Nginx package
-  package { 'nginx':
-    ensure => installed,
-  }
+# Setup New Ubuntu server with nginx
 
-  # Configure Nginx service
-  service { 'nginx':
-    ensure  => running,
-    enable  => true,
-    require => Package['nginx'],
-  }
-
-  # Create custom index HTML page
-  file { '/var/www/html/index.html':
-    ensure  => present,
-    content => 'Hello World!',
-    require => Package['nginx'],
-  }
-
-  # Configure Nginx server block
-  file { '/etc/nginx/sites-available/default':
-    ensure  => present,
-    content => "
-      server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-
-        root /var/www/html;
-        index index.html index.htm;
-
-        location /redirect_me {
-          return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-        }
-
-        location / {
-          try_files $uri $uri/ =404;
-        }
-      }
-    ",
-    require => Package['nginx'],
-    notify  => Service['nginx'],
-  }
+exec { 'update system':
+        command => '/usr/bin/apt-get update',
 }
 
-# Apply nginx class
-include nginx
+package { 'nginx':
+	ensure => 'installed',
+	require => Exec['update system']
+}
+
+file {'/var/www/html/index.html':
+	content => 'Hello World!'
+}
+
+exec {'redirect_me':
+	command => 'sed -i "24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;" /etc/nginx/sites-available/default',
+	provider => 'shell'
+}
+
+service {'nginx':
+	ensure => running,
+	require => Package['nginx']
+}
