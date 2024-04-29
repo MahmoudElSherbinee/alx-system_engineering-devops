@@ -9,16 +9,12 @@
 # Make sure that your servers are configured with the right hostnames: [STUDENT_ID]-web-01 and [STUDENT_ID]-web-02. If not, follow this tutorial.
 # For your answer file, write a Bash script that configures a new Ubuntu machine to respect above requirements
 
-# Update
-apt-get -y update
-
-# This command installs the software-properties-common package,
-# which allows you to manage software repositories.
-apt-get install --no-install-recommends software-properties-common
-
-# You will get the latest release of HAProxy 2.8 (and stick to this branch).
-add-apt-repository ppa:vbernat/haproxy-2.8
-apt-get install haproxy=2.8.\*
+install_haproxy() {
+  if ! [ -x "$(command -v haproxy)" ]; then
+    apt-get update -qq
+    apt-get install -y haproxy -qq
+  fi
+}
 
 # Define the HAProxy configuration
 configure_haproxy() {
