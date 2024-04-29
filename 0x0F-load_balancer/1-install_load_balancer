@@ -21,7 +21,11 @@ add-apt-repository ppa:vbernat/haproxy-2.8
 apt-get install haproxy=2.8.\*
 
 # Define the HAProxy configuration
-CONFIG=$(cat << 'EOF'
+configure_haproxy() {
+  sudo mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.backup
+  sudo touch /etc/haproxy/haproxy.cfg
+
+  local server_config="
 global
     log /dev/log    local0
     log /dev/log    local1 notice
@@ -38,9 +42,9 @@ defaults
     option httplog
     option dontlognull
     timeout client 15s
-  timeout connect 10s
-  timeout server 15s
-  timeout http-request 10s
+    timeout connect 10s
+    timeout server 15s
+    timeout http-request 10s
 
 frontend http_front
     bind *:80
@@ -50,11 +54,20 @@ backend http_back
     balance roundrobin
     server 531008-web-01 54.234.73.177:80 check
     server 531008-web-02 18.233.62.214:80 check
-EOF
-)
+  "
 
-# Echo the configuration into haproxy.cfg
-echo "$CONFIG" | sudo tee /etc/haproxy/haproxy.cfg > /dev/null
+  echo "$server_config" | sudo tee /etc/haproxy/haproxy.cfg >/dev/null
+}
 
-# Start the Nginx service
-service nginx start
+
+start_haproxy() {
+  sudo service haproxy start
+}
+
+verify_haproxy_status() {
+  if sudo service haproxy status | grep -q "active (running)"; then
+    echo "HAProxy is running."
+  else
+    echo "HAProxy is not running."
+  fi
+}
