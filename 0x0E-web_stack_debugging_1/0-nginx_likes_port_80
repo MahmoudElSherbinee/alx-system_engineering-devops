@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# creates a symbolic link from the Nginx configuration file located at /etc/nginx/sites-available/default to the sites-enabled directory. This is a common practice in Nginx configuration on Ubuntu systems.
+sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+sudo service nginx restart
