@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# involve modifying the Nginx configuration, restarting the Nginx service, and then cleaning up by truncating the Nginx PID file.
+sudo sed -i "s/8080/80/" /etc/nginx/sites-enabled/default
+sudo service nginx restart
+echo "" | sudo dd status=none of=/run/nginx.pid
