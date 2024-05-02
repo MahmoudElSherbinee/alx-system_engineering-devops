@@ -1,0 +1,16 @@
+defaults
+  mode http
+  timeout client 15s
+  timeout connect 10s
+  timeout server 15s
+  timeout http-request 10s
+
+frontend my-frontend
+    bind *:80
+    bind *:443 ssl crt /etc/haproxy/certs/www.sherbine.tech.pem
+    default_backend my-backend
+
+backend my-backend
+    balance roundrobin
+    server 531008-web-01 54.234.73.177:80 check
+    server 531008-web-02 18.233.62.214:80 check
