@@ -3,9 +3,9 @@
 This script fetches and displays task completion information
 for a given employee from a JSONPlaceholder API.
 """
-
-import sys
 import requests
+import sys
+
 
 # Constants
 BASE_URL = "https://jsonplaceholder.typicode.com/"
