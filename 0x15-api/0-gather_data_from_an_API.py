@@ -9,15 +9,13 @@ import sys
 
 if __name__ == "__main__":
     url = "https://jsonplaceholder.typicode.com/"
-
     employee_ID = sys.argv[1]
+
     userResponse = requests.get(url + "users/" + employee_ID)
-
     user = userResponse.json()
+    employee_name = user.get("name")
 
-    params = {"userId": employee_ID}
-    todoResponse = requests.get(url + "todos", params=params)
-
+    todoResponse = requests.get(url + "todos", {"userId": employee_ID})
     todos = todoResponse.json()
 
     done_tasks = []
@@ -29,7 +27,6 @@ if __name__ == "__main__":
             num_of_done_tasks += 1
         num_of_all_tasks += 1
 
-    employee_name = user.get("name")
     print("Employee {} is done with tasks({}/{}):".format(employee_name,
                                                           num_of_done_tasks,
                                                           num_of_all_tasks))
