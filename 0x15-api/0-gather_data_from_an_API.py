@@ -1,33 +1,38 @@
 #!/usr/bin/python3
 """
-Using https://jsonplaceholder.typicode.com
-returns info about employee TODO progress
-Implemented using recursion
+ a Python script that, using this REST API, for a given employee ID,
+ returns information about his/her TODO list progress.
 """
-import re
+
 import requests
 import sys
 
+if __name__ == "__main__":
+    url = "https://jsonplaceholder.typicode.com/"
 
-API = "https://jsonplaceholder.typicode.com"
-"""REST API url"""
+    employee_ID = sys.argv[1]
+    userResponse = requests.get(url + "users/" + employee_ID)
 
+    user = userResponse.json()
 
-if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        if re.fullmatch(r'\d+', sys.argv[1]):
-            id = int(sys.argv[1])
-            user_res = requests.get('{}/users/{}'.format(API, id)).json()
-            todos_res = requests.get('{}/todos'.format(API)).json()
-            user_name = user_res.get('name')
-            todos = list(filter(lambda x: x.get('userId') == id, todos_res))
-            todos_done = list(filter(lambda x: x.get('completed'), todos))
-            print(
-                'Employee {} is done with tasks({}/{}):'.format(
-                    user_name,
-                    len(todos_done),
-                    len(todos)
-                )
-            )
-            for todo_done in todos_done:
-                print('\t {}'.format(todo_done.get('title')))
+    params = {"userId": employee_ID}
+    todoResponse = requests.get(url + "todos", params=params)
+
+    todos = todoResponse.json()
+
+    done_tasks = []
+    num_of_done_tasks = 0
+    num_of_all_tasks = 0
+    for todo in todos:
+        if todo.get("completed") is True:
+            done_tasks.append(todo.get("title"))
+            num_of_done_tasks += 1
+        num_of_all_tasks += 1
+
+    employee_name = user.get("name")
+    print("Employee {} is done with tasks({}/{}):".format(employee_name,
+                                                          num_of_done_tasks,
+                                                          num_of_all_tasks))
+
+    for done_task in done_tasks:
+        print("\t {}".format(done_task))
