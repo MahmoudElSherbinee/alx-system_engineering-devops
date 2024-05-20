@@ -1,36 +1,43 @@
 #!/usr/bin/python3
-import requests
-import sys
+"""
+This script fetches and displays task completion information for a given employee from a JSONPlaceholder API.
+"""
 
-# Employee EMPLOYEE_NAME is done with tasks
-# (NUMBER_OF_DONE_TASKS/TOTAL_NUMBER_OF_TASKS):
-# TASK_TITLE (with 1 tabulation and 1 space before the TASK_TITLE)
+import sys
+import requests
+
+# Constants
+BASE_URL = "https://jsonplaceholder.typicode.com/"
+
 if __name__ == "__main__":
-    url = "https://jsonplaceholder.typicode.com/"
+    if len(sys.argv) != 2:
+        print("Usage: python gather_data_from_api.py <employee_ID>", file=sys.stderr)
+        sys.exit(1)
 
     employee_ID = sys.argv[1]
-    userResponse = requests.get(url + "users/" + employee_ID)
+    
+    try:
+        user_response = requests.get(f"{BASE_URL}users/{employee_ID}", timeout=10)
+        user_response.raise_for_status()
+        user = user_response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching user data: {e}", file=sys.stderr)
+        sys.exit(1)
 
-    user = userResponse.json()
+    try:
+        todo_response = requests.get(f"{BASE_URL}todos", params={"userId": employee_ID}, timeout=10)
+        todo_response.raise_for_status()
+        todos = todo_response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching todos: {e}", file=sys.stderr)
+        sys.exit(1)
 
-    params = {"userId": employee_ID}
-    todoResponse = requests.get(url + "todos", params=params)
-
-    todos = todoResponse.json()
-
-    done_tasks = []
-    num_of_done_tasks = 0
-    num_of_all_tasks = 0
-    for todo in todos:
-        if todo.get("completed") is True:
-            done_tasks.append(todo.get("title"))
-            num_of_done_tasks += 1
-        num_of_all_tasks += 1
+    done_tasks = [todo.get("title") for todo in todos if todo.get("completed")]
+    num_of_done_tasks = len(done_tasks)
+    num_of_all_tasks = len(todos)
 
     employee_name = user.get("name")
-    print("Employee {} is done with tasks({}/{}):".format(employee_name,
-                                                          num_of_done_tasks,
-                                                          num_of_all_tasks))
+    print(f"Employee {employee_name} is done with tasks({num_of_done_tasks}/{num_of_all_tasks}):")
 
     for done_task in done_tasks:
-        print("\t {}".format(done_task))
+        print(f"\t {done_task}")
